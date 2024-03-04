@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Record Audio</title>
+</head>
+
+<body>
+    <h1>Record Audio</h1>
+    <!-- <form action="http://127.0.0.1:3000/" method="POST" enctype="multipart/form-data"> -->
+        <button onclick="startRecording()">Start Recording</button>
+        <button onclick="stopRecording()">Stop Recording</button>
+        <audio id="audioElement" controls></audio>
+
+        <script>
+            let mediaRecorder;
+            let chunks = [];
+
+            function startRecording() {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function (stream) {
+                        mediaRecorder = new MediaRecorder(stream);
+                        mediaRecorder.start();
+
+                        mediaRecorder.addEventListener("dataavailable", function (e) {
+                            chunks.push(e.data);
+                        });
+                    })
+                    .catch(function (err) {
+                        console.log("An error occurred: " + err);
+                    });
+            }
+
+            function stopRecording() {
+                mediaRecorder.stop();
+
+                mediaRecorder.addEventListener("stop", function () {
+                    const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioElement = document.getElementById('audioElement');
+                    audioElement.src = audioUrl;
+
+                    // Send the audio blob to Flask API for further processing
+                    sendAudioToAPI(audioBlob);
+                });
+            }
+
+            function sendAudioToAPI(audioBlob) {
+                const formData = new FormData();
+                formData.append('audio', audioBlob);
+
+                fetch(' http://127.0.0.1:3000/', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data); // Handle the API response here
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        </script>
+    <!-- </form> -->
+</body>
+
+</html>

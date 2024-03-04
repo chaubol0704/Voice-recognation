@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+
+<body>
+  <center>
+    <h1>Audio Clip Recorder</h1>
+    <p><button id="record">Record</button></p>
+    <div id="sound-clip"></div>
+    <form class="p-3 text-center" action='/predict' method="POST" enctype="multipart/form-data">
+<!--        <input class="form-control" type="file" name="audiofile">-->
+        <input type="hidden" id="sound-clip-input" name="soundclip">
+        <input class="btn btn-primary mt-3" type="submit" value="Predict">
+    </form>
+  </center>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="processor.js"></script>
+</body>
+
+</html>
